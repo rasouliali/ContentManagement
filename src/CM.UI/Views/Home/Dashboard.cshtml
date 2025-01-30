@@ -1,0 +1,35 @@
+﻿@using CM.Application.Dto
+@model List<PostDto>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="row">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>opt</th>
+                    <th>Post</th>
+                    <th>Register Count</th>
+                    <th>Capacity</th>
+                    <th>CreatedDate</th>
+                    <th>Show Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+
+                    <tr>
+                        <td><a href="/Home/DeletePost?id=@item.Id" onclick="return confirm('Are you sure to delete this data?')">Del</a></td>
+                        <td>@item.PostData</td>
+                        <td>@item.RegisterCount</td>
+                        <td>@item.Capacity</td>
+                        <td>@item.CreatedDate</td>
+                        <td>@item.TutorialDate</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

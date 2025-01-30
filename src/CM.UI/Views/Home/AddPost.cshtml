@@ -1,0 +1,48 @@
+﻿@using CM.Application.Dto
+@model PostDto
+@{
+    ViewData["Title"] = "Add Post";
+}
+<h1>@ViewData["Title"]</h1>
+
+
+
+<main class="form-data">
+
+    @if (ViewBag.IsSuccess != null && ViewBag.IsSuccess)
+    {
+        <h5 class="h5 mb-3 fw-normal text-success">Added Successfully!</h5>
+        <h5 class="h5 mb-3 fw-normal"><a href="/">Home pagge</a></h5>
+    }
+    else
+    {
+        <form method="post" enctype="multipart/form-data">
+            <span class="text-danger" asp-validation-summary="All"></span>
+
+            <div class="form-floating">
+                <input type="text" class="form-control" asp-for="PostData" placeholder="Post Text">
+                <label asp-for="PostData">Post Text</label>
+                <span class="text-danger" asp-validation-for="PostData"></span>
+            </div>
+            <div >
+                <label for="FileData">Select File</label>
+                <input type="file" required class="form-control" accept="image/*" id="FileData" name="FileData">
+                <span class="text-danger" asp-validation-for="ImageFileName"></span>
+            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-floating">
+                    <input type="text" class="form-control" asp-for="Capacity" placeholder="Capacity">
+                    <label asp-for="Capacity"></label>
+                    <span class="text-danger" asp-validation-for="Capacity"></span>
+                </div>
+                <div class="form-floating">
+                    <input class="form-control" asp-for="TutorialDate" placeholder="Tutorial Date">
+                    <label asp-for="TutorialDate"></label>
+                    <span class="text-danger" asp-validation-for="TutorialDate"></span>
+                </div>
+            }
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Submit Data</button>
+        </form>
+    }
+</main>

@@ -1,0 +1,177 @@
+﻿@using System.Text.Json
+@using CM.Application.Dto
+@model List<PostDto>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="row">
+    @if(Model!=null){
+        foreach (var item in Model)
+        {
+            <div class="col-xl-4 col-md-6">
+                <div class="card main">
+                    <img src="/img/@item.ImageFileName" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <p class="card-text">@item.PostData</p>
+                        <a href="#" class="btn btn-primary details text-start" data-id="@item.Id">Detailts</a>
+                        @if(!item.IsSelected){
+                            <a href="#" class="btn btn-success register text-end" data-id="@item.Id">Register this</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        <script>
+            const jsonData = @Html.Raw(JsonSerializer.Serialize(Model));
+        </script>
+    }
+</div>
+
+<div class="modal fade z-1" id="PostDetailModal" tabindex="-1" aria-labelledby="PostDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Post Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6" id="postdata">
+                        <img src="" class="card-img-top">
+                        <p class="card-text" id="post-data"></p>
+                    </div>
+                    <div class="col-lg-6" id="commentdata"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="add-comment" >Add Comment</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade z-2" id="CommentDetailModal" tabindex="-1" aria-labelledby="PostDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Post Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Comment:</label>
+                        <textarea class="form-control" id="Comment"></textarea>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="CommentSubmit" class="btn btn-primary" >Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        $('.details').on('click',function(){
+            var id=$(this).attr('data-id');
+            var img=$(this).parent().parent().find('img');
+            var postData=$(this).parent().parent().find('.card-text');
+            $('#frm_comment #PostId').val(id);
+
+            $('#frm_comment #CommentId').val('');
+            $('#PostDetailModal img').attr('src',img.attr('src'));
+            $('#PostDetailModal #post-data').html(postData.text());
+            var postDatas=jsonData.filter(r=>r.Id==id);
+            if(postDatas && postDatas.length>0){
+                var postData=postDatas[0];
+                var comments=postData.PostComments;
+                var strComment="";
+                var countOpenDiv=0;
+                strComment=GetCommentStr(comments);
+                // for(var i=0;i<comments.length;i++){
+                //     strComment+="<div class='px-1 col-12 position-relative'>"+comments[i].CurrentUserFullname+": "+comments[i].Comment;
+                //     strComment+="<button class='btn btn-primary text-end' data-commandid="+comments[i].Id+">Reply</button>";
+                //     if((i+1<comments.length && comments[i+1].CommentId==null)||(i+1<comments.length &&  comments[i].Id != comments[i+1].CommentId)){
+                //         strComment+="</div>";
+                //         if(countOpenDiv>0)
+                //             countOpenDiv--;
+                //     }
+                //     else
+                //         countOpenDiv++;
+                // }
+
+                // for(var i=0;i<countOpenDiv;i++){
+                //     strComment+="</div>";
+                // }
+
+                $('#commentdata').html(strComment)
+                $('#commentdata button').on('click',function(){
+                    var commandid=$(this).attr('data-commandid');
+                    $('#frm_comment #CommentId').val(commandid);
+                    $('#CommentDetailModal').modal('show');
+
+                })
+            }
+            // $('#CommentDetailModal #Comment').val('');
+            $('#PostDetailModal').modal('show');
+        });
+        $('#add-comment').on('click',function(){
+            $('#CommentDetailModal').modal('show');
+        });
+        $('#CommentSubmit').on('click',function(){
+            $('#frm_comment #Comment').val($('#CommentDetailModal #Comment').val());
+            var datjson=JSON.stringify(
+                {
+                    Id:0,CommentId:$('#frm_comment #CommentId').val().length==0?0:$('#frm_comment #CommentId').val()
+                    ,PostId:$('#frm_comment #PostId').val()
+                    ,Comment:$('#CommentDetailModal #Comment').val()
+                    ,CurrentPostComment:null
+                    ,CurrentPost:null
+                });
+            $.post('/Home/AddComment',{
+                    Id:0,CommentId:$('#frm_comment #CommentId').val().length==0?0:$('#frm_comment #CommentId').val()
+                    ,PostId:$('#frm_comment #PostId').val()
+                    ,Comment:$('#CommentDetailModal #Comment').val()
+                }
+                ,function(resData){
+                    window.location.reload();
+                }
+            );
+            $('#CommentDetailModal #Comment').val('');
+        });
+        var strComment="";
+        function GetCommentStr(comments){
+            var rootComment=comments.filter(r=>r.CommentId==null);
+            strComment="";
+            //strComment+="<div class='px-1 col-12 position-relative'>"+comments[i].CurrentUserFullname+": "+comments[i].Comment;
+            //strComment+="<button class='btn btn-primary text-end' data-commandid="+comments[i].Id+">Reply</button>";
+            return GetNestedCommentStr(rootComment,comments)
+        }
+        function GetNestedCommentStr(thisComment,allComment){
+            strComment="";
+            for(var i=0;i<thisComment.length;i++){
+                strComment+="<div class='px-1 col-12 position-relative'>"+thisComment[i].CurrentUserFullname+": "+thisComment[i].Comment;
+                strComment+="<button class='btn btn-primary text-end' data-commandid="+thisComment[i].Id+">Reply</button>";
+                var childs=allComment.filter(r=>r.CommentId==thisComment[i].Id);
+                strComment+=GetNestedCommentStr(childs,allComment);
+                strComment+="</div>";
+            }
+            return strComment;
+        }
+        $('.register').on('click',function(){
+            var postId=$(this).attr('data-id')
+            $.post('/Home/SelectedPost',{postId},function(){
+                window.location.reload();
+            })
+        })
+    </script>
+    <form id="frm_comment" method="post" action="/Home/AddComment" enctype="application/json">
+        <input type="hidden" id="CommentId" />
+        <input type="hidden" id="PostId" />
+        <input type="hidden" id="Comment" />
+    </form>
+}
