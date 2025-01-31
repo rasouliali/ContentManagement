@@ -63,7 +63,7 @@ if (env.IsDevelopment())
     using (var scope = serviceProvider.CreateScope())
     {
         var initialiser = scope.ServiceProvider.GetRequiredService<CMContextInitialiser>();
-        initialiser.InitialiseAsync().Wait();
+        initialiser.InitialiseAsync().Wait();//if database does not exist, this line create it and all tables
         // your usual code
     }
 }

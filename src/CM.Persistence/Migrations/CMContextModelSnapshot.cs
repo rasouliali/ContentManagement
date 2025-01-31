@@ -313,7 +313,7 @@ namespace CM.Persistence.Migrations
                     b.HasOne("CM.Domain.Entities.UserEntities.UserInfo", "CurrentCreatedUser")
                         .WithMany()
                         .HasForeignKey("CreatedUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("CurrentCreatedUser");
@@ -328,13 +328,13 @@ namespace CM.Persistence.Migrations
                     b.HasOne("CM.Domain.Entities.UserEntities.UserInfo", "CurrentCreatedUser")
                         .WithMany()
                         .HasForeignKey("CreatedUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CM.Domain.Entities.PostEntities.Post", "CurrentPost")
                         .WithMany("PostComments")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("CurrentCreatedUser");
@@ -349,13 +349,13 @@ namespace CM.Persistence.Migrations
                     b.HasOne("CM.Domain.Entities.UserEntities.UserInfo", "CurrentCreatedUser")
                         .WithMany()
                         .HasForeignKey("CreatedUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CM.Domain.Entities.PostEntities.Post", "CurrentPost")
                         .WithMany("SelectedPosts")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("CurrentCreatedUser");
@@ -368,7 +368,7 @@ namespace CM.Persistence.Migrations
                     b.HasOne("CM.Domain.Entities.UserEntities.UserInfo", "CurrentUserInfo")
                         .WithMany("Sessions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("CurrentUserInfo");
@@ -379,13 +379,13 @@ namespace CM.Persistence.Migrations
                     b.HasOne("CM.Domain.Entities.UserEntities.Role", "CurrentRole")
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CM.Domain.Entities.UserEntities.UserInfo", "CurrentUserInfo")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("CurrentRole");
