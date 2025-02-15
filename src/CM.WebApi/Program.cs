@@ -58,14 +58,14 @@ IWebHostEnvironment env = builder.Environment;
 var app = builder.Build();
 if (env.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
-    var serviceProvider = app.Services.GetRequiredService<IServiceScopeFactory>();
-    using (var scope = serviceProvider.CreateScope())
-    {
-        var initialiser = scope.ServiceProvider.GetRequiredService<CMContextInitialiser>();
-        initialiser.InitialiseAsync().Wait();//if database does not exist, this line create it and all tables
-        // your usual code
-    }
+    //app.UseDeveloperExceptionPage();
+    //var serviceProvider = app.Services.GetRequiredService<IServiceScopeFactory>();
+    //using (var scope = serviceProvider.CreateScope())
+    //{
+    //    var initialiser = scope.ServiceProvider.GetRequiredService<CMContextInitialiser>();
+    //    initialiser.InitialiseAsync().Wait();//if database does not exist, this line create it and all tables
+    //    // your usual code
+    //}
 }
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
